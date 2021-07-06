@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TicTacToe", "TicTacToe\TicTacToe.vcxproj", "{C87AA798-D8D6-4C80-A79F-EC8EB209D323}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainApp", "MainApp\MainApp.vcxproj", "{897C8012-1463-42F1-A922-9C62DB810732}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C87AA798-D8D6-4C80-A79F-EC8EB209D323} = {C87AA798-D8D6-4C80-A79F-EC8EB209D323}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
