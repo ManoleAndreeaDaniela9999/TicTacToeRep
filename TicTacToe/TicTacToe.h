@@ -1,24 +1,42 @@
 #pragma once
 #include <iostream>
+#include "Player.h"
 
 class TicTacToe
 {
 public:
 	TicTacToe();
-	TicTacToe(const int n,const int m);
+	TicTacToe(const std::string& player1Name,char player1Symbol, const std::string& player2Name, char player2Symbol, int n, int m);
 
 	int GetRows()const noexcept;
 	int GetColumns()const noexcept;
-
-	void CellFill(const int& line, const int& column, const char& x) const;
-	bool CheckColumn(const int& colNumber) const;
-	bool CheckRow(const int& rowNumber) const;
-	bool CheckMainDiagonal(const int& rowNumber , const int& colNumber) const;
-	bool CheckSecDiagonal(const int& rowNumber , const int& colNumber) const;
+	int GetTurn() const noexcept;
 	char** GetBoard() const noexcept;
+	std::string GetActivePlayerName();
+	std::string GetPlayer1Name() noexcept;
+	std::string GetPlayer2Name() noexcept;
+
+
+	bool CheckColumn( int colNumber) const;
+	bool CheckRow( int rowNumber) const;
+	bool CheckMainDiagonal(int rowNumber , int colNumber) const;
+	bool CheckSecDiagonal(int rowNumber ,int colNumber) const;
+	bool VerifiyPosition(int lineNumber, int colNumber) const;
+	bool FullBoard() const;
+	bool WinCheck(int lineNumber,int colNumber) ;
+	
+	void CellFill( int line, int column,  char x) const;
+
+	void SwitchTurn();
+	
+	void TakeTurn(int lineNumber,int colNumber);
+
 	~TicTacToe();
 
 private:
 	int m_rows, m_cols;
 	char** m_board;
+	int m_turnNumber;
+	Player m_player1;
+	Player m_player2;
 };
