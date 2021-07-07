@@ -1,12 +1,14 @@
 #include <iostream>
 #include "TicTacToe.h"
-void ShowBoard(char **board,int rows, int cols)
+void ShowBoard(const TicTacToe& game)
 {
+	int rows = game.GetRows(), cols = game.GetColumns();
+
 	for (int indexRow = 0; indexRow < rows; indexRow++)
 	{
 		for (int indexCol = 0; indexCol < cols; indexCol++)
 		{
-			std::cout<<board[indexRow][indexCol] ;
+			std::cout<<game.GetCellAt(indexRow, indexCol);
 		}
 		std::cout << std::endl;
 	}
@@ -19,16 +21,17 @@ int main()
 	std::cout << "number of columns: ";
 	std::cin >> m;
 	if (m < 3 && n < 3) m = 3, n = 3;
+
 	auto game = new TicTacToe("Player 1 ", 'x', "Player 2 ", '0', n, m);
-	bool gameEnd = false, posIsCorrect  = false;
-	std::string winner = "NULL";
-	ShowBoard(game->GetBoard(),n,m);
-	while (!gameEnd && !game->FullBoard())
+	bool posIsCorrect  = false;
+	
+	ShowBoard(*game);
+	while (!game->FullBoard())
 	{
 		int row = 0;
 		int col = 0;
 		system("cls");
-		ShowBoard(game->GetBoard(), n, m);
+		ShowBoard(*game);
 		posIsCorrect = false;
 		while (!posIsCorrect)
 		{

@@ -13,6 +13,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GglTestLib", "GglTestLib\GglTestLib.vcxproj", "{EC6EA865-4E3B-4B2A-B483-C507ECC168EC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GglTestinApp", "GglTestinApp\GglTestinApp.vcxproj", "{A9C4A3DD-8EB3-4933-99F3-6FF14BBC8463}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC6EA865-4E3B-4B2A-B483-C507ECC168EC} = {EC6EA865-4E3B-4B2A-B483-C507ECC168EC}
+		{C87AA798-D8D6-4C80-A79F-EC8EB209D323} = {C87AA798-D8D6-4C80-A79F-EC8EB209D323}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

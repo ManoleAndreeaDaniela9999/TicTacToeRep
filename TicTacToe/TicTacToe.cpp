@@ -17,6 +17,7 @@ TicTacToe::TicTacToe(const std::string& player1Name, char player1Symbol, const s
 		m_rows = m_cols;
 		m_cols = aux;
 	}
+	if (m < 3 && n < 3) m = 3, n = 3; //default 3X3 if values ae too small
 
 	m_board = new char* [m_rows];
 
@@ -42,7 +43,10 @@ int TicTacToe::GetColumns() const noexcept
 {
 	return m_cols;
 }
-
+char TicTacToe::GetCellAt(int rowNumber,int colNumber) const noexcept
+{
+	return m_board[rowNumber][colNumber];
+}
 bool TicTacToe::CheckMainDiagonal(int rowNumber,int colNumber) const
 {
 	//main diagonal
@@ -155,11 +159,6 @@ void TicTacToe::TakeTurn(int lineNumber, int colNumber)
 	else
 		symbol = m_player2.GetSymbol();
 	CellFill(lineNumber, colNumber, symbol);
-}
-
-char** TicTacToe::GetBoard() const noexcept
-{
-	return m_board;
 }
 
 int TicTacToe::GetTurn() const noexcept
