@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\API">
+      <UniqueIdentifier>{a505b436-2936-44c7-8651-4e6b4cfca691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Strategies">
+      <UniqueIdentifier>{7a90326b-1c99-4900-b673-e1bd56799a81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TicTacToe.cpp">
@@ -28,6 +34,15 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="API\TicTacToeAPI.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassicPVP.h">
+      <Filter>Header Files\Strategies</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyPlayerVsComp.h">
+      <Filter>Header Files\Strategies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

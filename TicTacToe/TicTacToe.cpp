@@ -1,4 +1,12 @@
 #include "TicTacToe.h"
+#include "ClassicPVP.h"
+#include "EasyPlayerVsComp.h"
+
+ITicTacToe::Ptr ITicTacToe::Produce(const std::string& player1Name, const std::string& player2Name, int n, int m)
+{
+	return std::make_shared<TicTacToe>(player1Name,player2Name, n, m);
+}
+
 
 TicTacToe::TicTacToe()
 {
@@ -6,10 +14,12 @@ TicTacToe::TicTacToe()
 	m_cols = 0;
 	m_board = nullptr;
 	m_turnNumber = 1;
+	m_lPosRow = 0;
+	m_lPosCol = 0;
 }
 
-TicTacToe::TicTacToe(const std::string& player1Name, char player1Symbol, const std::string& player2Name, char player2Symbol, int n, int m)
-	: m_rows(n), m_cols(m), m_player1(Player{ player1Name,player1Symbol }), m_player2(Player{ player2Name,player2Symbol }), m_turnNumber(1)
+TicTacToe::TicTacToe(const std::string& player1Name, const std::string& player2Name, int n, int m)
+	: m_rows(n), m_cols(m), m_player1(Player{ player1Name,'x' }), m_player2(Player{ player2Name,'0' }), m_turnNumber(1)
 {
 	if (m_rows > m_cols)
 	{
@@ -17,7 +27,8 @@ TicTacToe::TicTacToe(const std::string& player1Name, char player1Symbol, const s
 		m_rows = m_cols;
 		m_cols = aux;
 	}
-	if (m < 3 && n < 3) m = 3, n = 3; //default 3X3 if values ae too small
+	if (n < 3) m_rows = 3;
+	if (m < 3) m_cols = 3; //default 3 if any value is too small
 
 	m_board = new char* [m_rows];
 
@@ -32,6 +43,8 @@ TicTacToe::TicTacToe(const std::string& player1Name, char player1Symbol, const s
 			m_board[rowIndex][colIndex] = '.';
 
 	}
+	m_lPosRow = 0;
+	m_lPosCol = 0;
 }
 
 int TicTacToe::GetRows() const noexcept
@@ -43,19 +56,19 @@ int TicTacToe::GetColumns() const noexcept
 {
 	return m_cols;
 }
-char TicTacToe::GetCellAt(int rowNumber,int colNumber) const noexcept
+char TicTacToe::GetCellAt(int rowNumber, int colNumber) const noexcept
 {
 	return m_board[rowNumber][colNumber];
 }
-bool TicTacToe::CheckMainDiagonal(int rowNumber,int colNumber) const
+bool TicTacToe::CheckMainDiagonal() const
 {
 	//main diagonal
-	int rowIndex = rowNumber;
-	int columnIndex = colNumber;
+	int rowIndex = m_lPosRow;
+	int columnIndex = m_lPosCol;
 	int count = 0;
-	
+
 	bool up = true, down = true;
-	char symbol = m_board[rowNumber][colNumber];
+	char symbol = m_board[m_lPosRow][m_lPosCol];
 	while (rowIndex < m_rows && columnIndex < m_cols)
 	{
 		if (m_board[rowIndex][columnIndex] != symbol)
@@ -65,9 +78,9 @@ bool TicTacToe::CheckMainDiagonal(int rowNumber,int colNumber) const
 		}
 		++rowIndex, ++columnIndex, ++count;
 	}
-	rowIndex = rowNumber;
-	columnIndex = colNumber;
-	while (rowIndex >= 0 && columnIndex >= 0 )
+	rowIndex = m_lPosRow;
+	columnIndex = m_lPosCol;
+	while (rowIndex >= 0 && columnIndex >= 0)
 	{
 		if (m_board[rowIndex][columnIndex] != symbol)
 		{
@@ -79,16 +92,16 @@ bool TicTacToe::CheckMainDiagonal(int rowNumber,int colNumber) const
 
 	if (count != m_rows + 1) up = false, down = false;
 	if (up && down) return true;
-	
+
 	return false;
 }
 
-bool TicTacToe::CheckSecDiagonal(int rowNumber,int colNumber) const
+bool TicTacToe::CheckSecDiagonal() const
 {
 	//secondary diagonal
-	int rowIndex = rowNumber;
-	int columnIndex = colNumber;
-	char symbol = m_board[rowNumber][colNumber];
+	int rowIndex = m_lPosRow;
+	int columnIndex = m_lPosCol;
+	char symbol = m_board[m_lPosRow][m_lPosCol];
 	bool up = true;
 	bool down = true;
 	int count = 0;
@@ -101,8 +114,8 @@ bool TicTacToe::CheckSecDiagonal(int rowNumber,int colNumber) const
 		}
 		++rowIndex, --columnIndex, ++count;
 	}
-	rowIndex = rowNumber;
-	columnIndex = colNumber;
+	rowIndex = m_lPosRow;
+	columnIndex = m_lPosCol;
 	while (rowIndex >= 0 && columnIndex < m_cols)
 	{
 		if (m_board[rowIndex][columnIndex] != symbol)
@@ -117,10 +130,15 @@ bool TicTacToe::CheckSecDiagonal(int rowNumber,int colNumber) const
 	return false;
 }
 
-bool TicTacToe::VerifiyPosition(int lineNumber, int colNumber) const
+bool TicTacToe::VerifyCellExists() const
 {
-	if (lineNumber < 0 || colNumber < 0 || lineNumber >= m_rows || colNumber >= m_cols) return false;
-	if (m_board[lineNumber][colNumber] != '.') return false;
+	if (m_lPosRow < 0 || m_lPosCol < 0 || m_lPosRow >= m_rows || m_lPosCol >= m_cols) return false;
+	return true;
+}
+
+bool TicTacToe::VerifiyCellOccupied() const
+{
+	if (m_board[m_lPosRow][m_lPosCol] != '.') return false;
 	return true;
 }
 
@@ -137,9 +155,9 @@ bool TicTacToe::FullBoard() const
 	return true;
 }
 
-bool TicTacToe::WinCheck(int lineNumber, int colNumber) 
+bool TicTacToe::WinCheck()
 {
-	if (CheckColumn(colNumber) ||CheckRow(lineNumber) ||CheckMainDiagonal(lineNumber, colNumber) ||CheckSecDiagonal(lineNumber, colNumber))
+	if (CheckColumn() || CheckRow() || CheckMainDiagonal() || CheckSecDiagonal())
 	{
 		return true;
 	};
@@ -151,20 +169,28 @@ void TicTacToe::SwitchTurn()
 	m_turnNumber = 3 - m_turnNumber;
 }
 
-void TicTacToe::TakeTurn(int lineNumber, int colNumber)
+EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
 {
+	m_lPosRow = lineNumber;
+	m_lPosCol = colNumber;
+
+	if (!VerifyCellExists())
+		return EMoveResult::InvalidPosition;
+	if (!VerifiyCellOccupied())
+		return EMoveResult::PositionOccupied;
 	char symbol;
 	if (m_turnNumber == 1)
 		symbol = m_player1.GetSymbol();
 	else
 		symbol = m_player2.GetSymbol();
-	CellFill(lineNumber, colNumber, symbol);
+	CellFill(symbol);
+
+	if(!WinCheck())
+		SwitchTurn();
+
+	return EMoveResult::Success;
 }
 
-int TicTacToe::GetTurn() const noexcept
-{
-	return m_turnNumber;
-}
 std::string TicTacToe::GetActivePlayerName()
 {
 	if (m_turnNumber == 1) return GetPlayer1Name();
@@ -189,25 +215,25 @@ TicTacToe::~TicTacToe()
 	delete m_board;
 }
 
-void TicTacToe::CellFill(int line,int column, char x = 'x') const
+void TicTacToe::CellFill(char x = 'x') const
 {
-	m_board[line][column] = x;
+	 m_board[m_lPosRow][m_lPosCol] = x;
 }
 
-bool TicTacToe::CheckRow(int rowNumber) const
+bool TicTacToe::CheckRow() const
 {
-	char firstSymbol = m_board[rowNumber][0];
+	char firstSymbol = m_board[m_lPosRow][0];
 	for (int columnIndex = 1; columnIndex < m_cols; columnIndex++)
-		if (m_board[rowNumber][columnIndex] != firstSymbol)
+		if (m_board[m_lPosRow][columnIndex] != firstSymbol)
 			return false;
 	return true;
 }
 
-bool TicTacToe::CheckColumn(int colNumber) const
+bool TicTacToe::CheckColumn() const
 {
-	char firstSymbol = m_board[0][colNumber];
+	char firstSymbol = m_board[0][m_lPosCol];
 	for (int lineIndex = 1; lineIndex < m_rows; lineIndex++)
-		if (m_board[lineIndex][colNumber] != firstSymbol)
+		if (m_board[lineIndex][m_lPosCol] != firstSymbol)
 			return false;
 	return true;
 }
