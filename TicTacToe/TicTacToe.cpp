@@ -191,6 +191,11 @@ EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
 	return EMoveResult::Success;
 }
 
+bool TicTacToe::Reset()
+{
+	return false;
+}
+
 std::string TicTacToe::GetActivePlayerName()
 {
 	if (m_turnNumber == 1) return GetPlayer1Name();

@@ -18,6 +18,7 @@ public:
 	bool WinCheck()  override;
 	bool FullBoard() const  override;
 	EMoveResult TakeTurn(int lineNumber,int colNumber) override;
+	bool Reset() override;//TO DO
 	~TicTacToe();
 private:
 //procedures
