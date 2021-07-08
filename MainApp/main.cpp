@@ -1,6 +1,6 @@
 #include <iostream>
 #include "TicTacToe.h"
-void ShowBoard(std::shared_ptr<ITicTacToe> game)
+void ShowBoard(std::shared_ptr<TicTacToeAPI::ITicTacToe> game)
 {
 	int rows = game->GetRows(), cols = game->GetColumns();
 
@@ -21,15 +21,15 @@ int main()
 	std::cout << "number of columns: ";
 	std::cin >> m;
 
-	auto game = ITicTacToe::Produce( "Player 1 ","Player 2 ", n, m);
-
+	auto game = TicTacToeAPI::ITicTacToe::Produce( "Player 1 ","Player 2 ", n, m);
+	game->SetStrategy(TicTacToeAPI::StrategyType::CLASSIC_PVP);
 	do
 	{
 		system("cls");
 		
 		ShowBoard(game);
 
-		EMoveResult result;
+		TicTacToeAPI::EMoveResult result;
 		do
 		{
 			int row, col;
@@ -38,17 +38,19 @@ int main()
 			std::cout << "Pick a column: ";
 			std::cin >> col;
 
-			result = game->TakeTurn(row, col);
+			result = game->TakeTurn(row, col); //this is where  Strategy applies
 
 			switch (result)
 			{
-			case EMoveResult::PositionOccupied: { std::cout << "Position occupied! "; break; }
-			case EMoveResult::InvalidPosition: { std::cout << "Invalid position! Please choose a place on the board! " << std::endl; break; }
+			case TicTacToeAPI::EMoveResult::PositionOccupied: { std::cout << "Position occupied! "; break; }
+			case TicTacToeAPI::EMoveResult::InvalidPosition: { std::cout << "Invalid position! Please choose a place on the board! " << std::endl; break; }
 			}
-		} while (result != EMoveResult::Success);
+		} while (result != TicTacToeAPI::EMoveResult::Success);
 
 	} while (!game->FullBoard() && !game->WinCheck());
-
+	std::cout << std::endl << std::endl;
+	ShowBoard(game);
+	std::cout << std::endl << std::endl;
 	if (game->WinCheck())
 		std::cout << std::endl << game->GetActivePlayerName() << " won the game!" << std::endl;
 	else

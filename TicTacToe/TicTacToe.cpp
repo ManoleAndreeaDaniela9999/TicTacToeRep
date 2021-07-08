@@ -2,7 +2,7 @@
 #include "ClassicPVP.h"
 #include "EasyPlayerVsComp.h"
 
-ITicTacToe::Ptr ITicTacToe::Produce(const std::string& player1Name, const std::string& player2Name, int n, int m)
+TicTacToeAPI::ITicTacToe::Ptr TicTacToeAPI::ITicTacToe::Produce(const std::string& player1Name, const std::string& player2Name, int n, int m)
 {
 	return std::make_shared<TicTacToe>(player1Name,player2Name, n, m);
 }
@@ -16,10 +16,12 @@ TicTacToe::TicTacToe()
 	m_turnNumber = 1;
 	m_lPosRow = 0;
 	m_lPosCol = 0;
+	m_strategyType = TicTacToeAPI::StrategyType::CLASSIC_PVP;
 }
 
 TicTacToe::TicTacToe(const std::string& player1Name, const std::string& player2Name, int n, int m)
-	: m_rows(n), m_cols(m), m_player1(Player{ player1Name,'x' }), m_player2(Player{ player2Name,'0' }), m_turnNumber(1)
+	: m_rows(n), m_cols(m), m_player1(Player{ player1Name,'x' }), m_player2(Player{ player2Name,'0' }),
+	m_turnNumber(1), m_strategy{new TicTacToeAPI::ClassicPVP} , m_strategyType{ TicTacToeAPI::StrategyType::CLASSIC_PVP }
 {
 	if (m_rows > m_cols)
 	{
@@ -169,31 +171,61 @@ void TicTacToe::SwitchTurn()
 	m_turnNumber = 3 - m_turnNumber;
 }
 
-EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
+void TicTacToe::SetStrategy(TicTacToeAPI::StrategyType strategyType)
 {
+	switch (strategyType)
+	{
+	case TicTacToeAPI::StrategyType::CLASSIC_PVP: { m_strategy = std::make_shared<TicTacToeAPI::ClassicPVP>(); break; }
+	case TicTacToeAPI::StrategyType::EASY_PVCOMP: {m_strategy = std::make_shared<TicTacToeAPI::EasyPlayerComp>(); break; };
+	case TicTacToeAPI::StrategyType::MEDIUM_PVCOMP: {};
+	}
+	m_strategyType = strategyType;
+}
+
+//TicTacToeAPI::StrategyType TicTacToe::GetStrategyType()
+//{
+//}
+
+TicTacToeAPI::EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
+{
+	
 	m_lPosRow = lineNumber;
 	m_lPosCol = colNumber;
-
 	if (!VerifyCellExists())
-		return EMoveResult::InvalidPosition;
+		return TicTacToeAPI::EMoveResult::InvalidPosition;
 	if (!VerifiyCellOccupied())
-		return EMoveResult::PositionOccupied;
+		return TicTacToeAPI::EMoveResult::PositionOccupied;
 	char symbol;
 	if (m_turnNumber == 1)
+	{
 		symbol = m_player1.GetSymbol();
+	}
 	else
+	{
 		symbol = m_player2.GetSymbol();
+	}
 	CellFill(symbol);
-
-	if(!WinCheck())
+	if (!WinCheck())
 		SwitchTurn();
-
-	return EMoveResult::Success;
+	if(!FullBoard())
+	m_strategy->ApplyStrategy( m_board,m_turnNumber, m_lPosRow, m_lPosCol, m_rows, m_cols);
+	if (WinCheck())
+	{
+		SwitchTurn();
+		return TicTacToeAPI::EMoveResult::Success;
+	}
+	else return TicTacToeAPI::EMoveResult::Success;
 }
 
 bool TicTacToe::Reset()
 {
-	return false;
+	for (int rowIndex = 0; rowIndex < m_rows; rowIndex++)
+	{
+		for (int colIndex = 0; colIndex < m_cols; colIndex++)
+			m_board[rowIndex][colIndex] = '.';
+	}
+	m_turnNumber = 1;
+	return true;
 }
 
 std::string TicTacToe::GetActivePlayerName()
@@ -215,12 +247,12 @@ std::string TicTacToe::GetPlayer2Name() noexcept
 
 TicTacToe::~TicTacToe()
 {
-	for (int index = 0; index < m_cols; index++)
+	for (int index = 0; index < m_rows; index++)
 		delete m_board[index];
 	delete m_board;
 }
 
-void TicTacToe::CellFill(char x = 'x') const
+void TicTacToe::CellFill(char x) const
 {
 	 m_board[m_lPosRow][m_lPosCol] = x;
 }

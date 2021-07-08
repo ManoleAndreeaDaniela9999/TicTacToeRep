@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "API\TicTacToeAPI.h"
 
-class TicTacToe : public ITicTacToe
+class TicTacToe : public TicTacToeAPI::ITicTacToe
 {
 public:
 	TicTacToe();
@@ -17,9 +17,11 @@ public:
 	std::string GetActivePlayerName()  override;
 	bool WinCheck()  override;
 	bool FullBoard() const  override;
-	EMoveResult TakeTurn(int lineNumber,int colNumber) override;
+	TicTacToeAPI::EMoveResult TakeTurn(int lineNumber,int colNumber) override;
 	bool Reset() override;//TO DO
 	~TicTacToe();
+	void SetStrategy(TicTacToeAPI::StrategyType strategyType);
+	//TicTacToeAPI::StrategyType GetStrategyType();
 private:
 //procedures
 	std::string GetPlayer1Name() noexcept;
@@ -28,7 +30,7 @@ private:
 	bool VerifiyCellOccupied() const;
 	void CellFill( char x) const;
 	void SwitchTurn();
-
+	
 
 	bool CheckColumn() const;
 	bool CheckRow() const;
@@ -43,5 +45,6 @@ private:
 	int m_turnNumber;
 	Player m_player1;
 	Player m_player2;
-	std::shared_ptr<IStrategy> m_strategy;
+	std::shared_ptr<TicTacToeAPI::IStrategy> m_strategy;
+	TicTacToeAPI::StrategyType m_strategyType;
 };
