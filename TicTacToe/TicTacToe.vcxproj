@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="API\TicTacToeAPI.h" />
     <ClInclude Include="EasyPlayerVsComp.h" />
+    <ClInclude Include="MediumPlayerVsComp.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ClassicPVP.h" />
     <ClInclude Include="TicTacToe.h" />

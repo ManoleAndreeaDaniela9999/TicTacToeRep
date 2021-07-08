@@ -22,7 +22,7 @@ int main()
 	std::cin >> m;
 
 	auto game = TicTacToeAPI::ITicTacToe::Produce( "Player 1 ","Player 2 ", n, m);
-	game->SetStrategy(TicTacToeAPI::StrategyType::CLASSIC_PVP);
+	game->SetStrategy(TicTacToeAPI::StrategyType::EASY_PVCOMP);
 	do
 	{
 		system("cls");

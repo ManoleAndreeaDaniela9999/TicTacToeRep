@@ -47,5 +47,8 @@
     <ClInclude Include="EasyPlayerVsComp.h">
       <Filter>Header Files\Strategies</Filter>
     </ClInclude>
+    <ClInclude Include="MediumPlayerVsComp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

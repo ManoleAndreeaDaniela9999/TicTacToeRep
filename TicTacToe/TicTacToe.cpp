@@ -188,7 +188,7 @@ void TicTacToe::SetStrategy(TicTacToeAPI::StrategyType strategyType)
 
 TicTacToeAPI::EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
 {
-	
+	bool PCPlays;
 	m_lPosRow = lineNumber;
 	m_lPosCol = colNumber;
 	if (!VerifyCellExists())
@@ -207,14 +207,15 @@ TicTacToeAPI::EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
 	CellFill(symbol);
 	if (!WinCheck())
 		SwitchTurn();
-	if(!FullBoard())
-	m_strategy->ApplyStrategy( m_board,m_turnNumber, m_lPosRow, m_lPosCol, m_rows, m_cols);
-	if (WinCheck())
+	if (!FullBoard())
+	
+	PCPlays = m_strategy->ApplyStrategy( m_board,m_turnNumber, m_lPosRow, m_lPosCol, m_rows, m_cols);
+	if (WinCheck() && PCPlays)
 	{
 		SwitchTurn();
 		return TicTacToeAPI::EMoveResult::Success;
 	}
-	else return TicTacToeAPI::EMoveResult::Success;
+	return TicTacToeAPI::EMoveResult::Success;
 }
 
 bool TicTacToe::Reset()
