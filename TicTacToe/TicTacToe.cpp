@@ -1,6 +1,8 @@
 #include "TicTacToe.h"
 #include "ClassicPVP.h"
 #include "EasyPlayerVsComp.h"
+#include "MediumPlayerVsComp.h"
+#include "HardPlayerVsComp.h"
 
 TicTacToeAPI::ITicTacToe::Ptr TicTacToeAPI::ITicTacToe::Produce(const std::string& player1Name, const std::string& player2Name, int n, int m)
 {
@@ -177,7 +179,8 @@ void TicTacToe::SetStrategy(TicTacToeAPI::StrategyType strategyType)
 	{
 	case TicTacToeAPI::StrategyType::CLASSIC_PVP: { m_strategy = std::make_shared<TicTacToeAPI::ClassicPVP>(); break; }
 	case TicTacToeAPI::StrategyType::EASY_PVCOMP: {m_strategy = std::make_shared<TicTacToeAPI::EasyPlayerComp>(); break; };
-	case TicTacToeAPI::StrategyType::MEDIUM_PVCOMP: {};
+	case TicTacToeAPI::StrategyType::MEDIUM_PVCOMP: {m_strategy = std::make_shared<TicTacToeAPI::MediumPlayerVsComp>(); break; };
+	case TicTacToeAPI::StrategyType::HARD_PVCOMP: {m_strategy = std::make_shared<TicTacToeAPI::HardPlayerVsComp>(); break; };
 	}
 	m_strategyType = strategyType;
 }
@@ -205,15 +208,21 @@ TicTacToeAPI::EMoveResult TicTacToe::TakeTurn(int lineNumber, int colNumber)
 		symbol = m_player2.GetSymbol();
 	}
 	CellFill(symbol);
-	if (!WinCheck())
-		SwitchTurn();
-	if (!FullBoard())
+	PCPlays = m_strategy->ApplyStrategy(m_board,m_turnNumber, m_lPosRow, m_lPosCol, m_rows, m_cols);
 	
-	PCPlays = m_strategy->ApplyStrategy( m_board,m_turnNumber, m_lPosRow, m_lPosCol, m_rows, m_cols);
-	if (WinCheck() && PCPlays)
+	if (!PCPlays)
 	{
-		SwitchTurn();
-		return TicTacToeAPI::EMoveResult::Success;
+		if (!WinCheck())
+			SwitchTurn();
+	}
+	else
+	{	
+		if(WinCheck()) return TicTacToeAPI::EMoveResult::Success;
+		else {
+			SwitchTurn();
+			m_lPosRow = lineNumber;
+			m_lPosCol = colNumber;
+		}
 	}
 	return TicTacToeAPI::EMoveResult::Success;
 }
