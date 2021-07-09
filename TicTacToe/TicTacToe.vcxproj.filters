@@ -27,9 +27,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClassicPVP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TicTacToe.h">
@@ -51,7 +48,7 @@
       <Filter>Header Files\Strategies</Filter>
     </ClInclude>
     <ClInclude Include="HardPlayerVsComp.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Strategies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

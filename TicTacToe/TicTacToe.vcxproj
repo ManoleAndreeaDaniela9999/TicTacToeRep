@@ -156,7 +156,6 @@
     <ClInclude Include="TicTacToe.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClassicPVP.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TicTacToe.cpp" />
   </ItemGroup>
